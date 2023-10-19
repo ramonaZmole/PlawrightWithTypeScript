@@ -3,17 +3,17 @@
 ---
 name: MegaLinter
 
-# Trigger mega-linter at every push. Action will also be visible from Pull
-# Requests to main
+# Trigger mega-linter at every push. Action will also be visible from
+# Pull Requests to main
 on:
   # Comment this line to trigger action only on pull-requests
   # (not recommended if you don't pay for GH Actions)
   push:
-     - main
-
+      - main
   pull_request:
     branches:
       - main
+      - master
 
 # Comment env block if you do not want to apply fixes
 env:
@@ -41,14 +41,13 @@ jobs:
     runs-on: ubuntu-latest
 
     # Give the default GITHUB_TOKEN write permission to commit and push, comment
-    # issues & post new PR; remove the ones you do not need
+    # issues, and post new Pull Requests; remove the ones you do not need
     permissions:
       contents: write
       issues: write
       pull-requests: write
 
     steps:
-
       # Git Checkout
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -64,14 +63,13 @@ jobs:
 
         # You can override MegaLinter flavor used to have faster performances
         # More info at https://megalinter.io/flavors/
-        uses: oxsecurity/megalinter@v7
+        uses: oxsecurity/megalinter/flavors/javascript@v7
 
         id: ml
 
         # All available variables are described in documentation
         # https://megalinter.io/configuration/
         env:
-
           # Validates all source when push on main, else just the git diff with
           # main. Override with true if you always want to lint all sources
           #
@@ -82,21 +80,14 @@ jobs:
           # VALIDATE_ALL_CODEBASE: >-
           #   ${{
           #     github.event_name == 'push' &&
-          #     contains(fromJSON('["refs/heads/main", "refs/heads/master"]'), github.ref)
+          #     github.ref == 'refs/heads/main'
           #   }}
-          VALIDATE_ALL_CODEBASE: >-
-            ${{
-              github.event_name == 'push' &&
-              contains(fromJSON('["refs/heads/main", "refs/heads/master"]'), github.ref)
-            }}
+          VALIDATE_ALL_CODEBASE: true
 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-          # ADD YOUR CUSTOM ENV VARIABLES HERE OR DEFINE THEM IN A FILE
+          # ADD YOUR CUSTOM ENV VARIABLES HERE TO OVERRIDE VALUES OF
           # .mega-linter.yml AT THE ROOT OF YOUR REPOSITORY
-
-          # Uncomment to disable copy-paste and spell checks
-          # DISABLE: COPYPASTE,SPELL
 
       # Upload MegaLinter artifacts
       - name: Archive production artifacts
@@ -123,7 +114,8 @@ jobs:
           (
             github.event_name == 'push' ||
             github.event.pull_request.head.repo.full_name == github.repository
-          )
+          ) &&
+          !contains(github.event.head_commit.message, 'skip fix')
         with:
           token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
           commit-message: "[MegaLinter] Apply linters automatic fixes"
@@ -141,7 +133,8 @@ jobs:
           (
             github.event_name == 'push' ||
             github.event.pull_request.head.repo.full_name == github.repository
-          )
+          ) &&
+          !contains(github.event.head_commit.message, 'skip fix')
         run: |
           echo "PR Number - ${{ steps.cpr.outputs.pull-request-number }}"
           echo "PR URL - ${{ steps.cpr.outputs.pull-request-url }}"
@@ -156,11 +149,12 @@ jobs:
             env.APPLY_FIXES_EVENT == github.event_name
           ) &&
           env.APPLY_FIXES_MODE == 'commit' &&
-          (!contains(fromJSON('["refs/heads/main", "refs/heads/master"]'), github.ref)) &&
+          github.ref != 'refs/heads/main' &&
           (
             github.event_name == 'push' ||
             github.event.pull_request.head.repo.full_name == github.repository
-          )
+          ) &&
+          !contains(github.event.head_commit.message, 'skip fix')
         run: sudo chown -Rc $UID .git/
 
       - name: Commit and push applied linter fixes
@@ -172,11 +166,12 @@ jobs:
             env.APPLY_FIXES_EVENT == github.event_name
           ) &&
           env.APPLY_FIXES_MODE == 'commit' &&
-          (!contains(fromJSON('["refs/heads/main", "refs/heads/master"]'), github.ref)) &&
+          github.ref != 'refs/heads/main' &&
           (
             github.event_name == 'push' ||
             github.event.pull_request.head.repo.full_name == github.repository
-          )
+          ) &&
+          !contains(github.event.head_commit.message, 'skip fix')
         with:
           branch: >-
             ${{

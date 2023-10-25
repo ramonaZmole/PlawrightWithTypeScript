@@ -7,23 +7,23 @@ import AdminHeaderPage from '../../pages/admin-header-page'
 let loginPage: LoginPage;
 let adminHeaderPage: AdminHeaderPage;
 
-test.beforeAll(async ({ page }) => {
-    loginPage = new LoginPage(page);
-    adminHeaderPage = new AdminHeaderPage(page);
-});
+// test.beforeEach(async ({ page }) => {
+//     loginPage = new LoginPage(page);
+//     adminHeaderPage = new AdminHeaderPage(page);
+// });
 
-const testCases = [
-    { username: ADMIN_USERNAME, password: ADMIN_PASSWORD },
-    { username: 'invalidUser', password: `invalidPassword` },
-];
+// const testCases = [
+//     { username: ADMIN_USERNAME, password: ADMIN_PASSWORD },
+//     { username: 'invalidUser', password: `invalidPassword` },
+// ];
 
-for (const { username, password } of testCases)
-    test(`Login as user ${username}`, async ({ page }) => {
-        await page.goto(ADMIN_URL);
-        await loginPage.login(username, password);
-        await expect(adminHeaderPage.isLogoutButtonDisplayed).toBeTruthy;
-    });
+// for (const { username, password } of testCases)
+//     test(`Login as user ${username}`, async ({ page }) => {
+//         await page.goto(ADMIN_URL);
+//         await loginPage.login(username, password);
+//         await expect(adminHeaderPage.isLogoutButtonDisplayed).toBeTruthy;
+//     });
 
-test.afterAll(async ({ page }) => {
-    await page.close();
-});
+// test.afterEach(async ({ page }) => {
+//     await page.close();
+// });

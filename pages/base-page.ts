@@ -12,11 +12,6 @@ export class BasePage {
     }
 
     async getErrorMessages(): Promise<string[]> {
-        // WaitHelpers.ExplicitWait();
-        //let errorMessages =
-        //let t = errorMessages.map(x => x.allTextContents());
-        //let rr=typeof t;
-        //  return errorMessages.map(x => x.textContent);
         return await this.#errorMessages.allTextContents();
     }
 

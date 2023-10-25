@@ -25,5 +25,5 @@ for (const { username, password, isLoggedIn } of testCases)
     });
 
 test.afterEach(async ({ page }) => {
-   // await page.close();
+    await page.close();
 });

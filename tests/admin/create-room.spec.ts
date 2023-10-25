@@ -34,11 +34,9 @@ test('Room can be created', async ({ page }) => {
     await roomsPage.createRoom();
     await expect(await roomsPage.isErrorMessageDisplayed()).toBeTruthy();
 
-    // let s = await roomsPage.getErrorMessages();
-    // let sa = await page.locator(".alert.alert-danger p").allTextContents();
-    // expect((await roomsPage.getErrorMessages()).includes("must be greater than or equal to 1"));
-    //await expect(s.includes("Room name must be set"));
-
+    let errorMessages = await roomsPage.getErrorMessages();
+    expect(errorMessages).toContain("Room name must be set")
+    expect(errorMessages).toContain("must be greater than or equal to 1")
 });
 
 test.afterEach(async ({ page }) => {

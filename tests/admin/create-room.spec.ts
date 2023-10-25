@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test';
 import { ADMIN_URL } from '../../helpers/constants';
 import LoginPage from '../../pages/login-page';
 import RoomsPage from '../../pages/rooms-page';
+import { Room } from '../../helpers/models/room';
 
 let loginPage: LoginPage;
 let roomsPage: RoomsPage;
@@ -37,6 +38,8 @@ test('Room can be created', async ({ page }) => {
     let errorMessages = await roomsPage.getErrorMessages();
     expect(errorMessages).toContain("Room name must be set")
     expect(errorMessages).toContain("must be greater than or equal to 1")
+    await roomsPage.insertRoomDetails(new Room());
+    await roomsPage.createRoom();
 });
 
 test.afterEach(async ({ page }) => {

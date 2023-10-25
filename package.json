@@ -16,7 +16,11 @@
   },
   "homepage": "https://github.com/ramonaZmole/PlawrightWithTypeScript#readme",
   "devDependencies": {
+    "@faker-js/faker": "^8.2.0",
     "@playwright/test": "^1.39.0",
     "@types/node": "^20.8.7"
+  },
+  "dependencies": {
+    "faker": "^6.6.6"
   }
 }

@@ -6,3 +6,5 @@
     Family,
     Suite
 }
+
+export default RoomType

@@ -13,15 +13,15 @@ test.beforeEach(async ({ page }) => {
 });
 
 const testCases = [
-    { username: ADMIN_USERNAME, password: ADMIN_PASSWORD },
-    { username: 'invalidUser', password: `invalidPassword` },
+    { username: ADMIN_USERNAME, password: ADMIN_PASSWORD, isLoggedIn: true },
+    { username: 'invalidUser', password: 'invalidPassword', isLoggedIn: false },
 ];
 
-for (const { username, password } of testCases)
+for (const { username, password, isLoggedIn } of testCases)
     test(`Login as user ${username}`, async ({ page }) => {
         await page.goto(ADMIN_URL);
         await loginPage.login(username, password);
-        await expect(adminHeaderPage.isLogoutButtonDisplayed).toBeTruthy;
+        await expect(await adminHeaderPage.isLogoutButtonDisplayed()).toBe(isLoggedIn);
     });
 
 test.afterEach(async ({ page }) => {

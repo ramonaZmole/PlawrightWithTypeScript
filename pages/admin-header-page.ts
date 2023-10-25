@@ -1,4 +1,4 @@
-import { Locator, Page } from "@playwright/test";
+import { Locator, Page, expect } from "@playwright/test";
 
 class AdminHeaderPage {
 
@@ -13,7 +13,7 @@ class AdminHeaderPage {
     }
 
     async isLogoutButtonDisplayed(): Promise<boolean> {
-        return this.logoutButton.isVisible();
+        return await this.logoutButton.isVisible();
     }
 }
 export default AdminHeaderPage;

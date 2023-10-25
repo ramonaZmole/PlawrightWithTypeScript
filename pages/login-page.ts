@@ -28,6 +28,8 @@ class LoginPage {
             await this._passwordInput.fill(password);
         }
         await this._loginButton.click();
+        await this.page.waitForLoadState('domcontentloaded');
+        await this.page.waitForResponse(x=>x.url().includes('auth/login'))
     }
 }
 

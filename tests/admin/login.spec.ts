@@ -7,7 +7,7 @@ import AdminHeaderPage from '../../pages/admin-header-page'
 let loginPage: LoginPage;
 let adminHeaderPage: AdminHeaderPage;
 
-test.beforeAll(async ({ page }) => {
+test.beforeEach(async ({ page }) => {
     loginPage = new LoginPage(page);
     adminHeaderPage = new AdminHeaderPage(page);
 });
@@ -24,6 +24,6 @@ for (const { username, password } of testCases)
         await expect(adminHeaderPage.isLogoutButtonDisplayed).toBeTruthy;
     });
 
-test.afterAll(async ({ page }) => {
+test.afterEach(async ({ page }) => {
     await page.close();
 });

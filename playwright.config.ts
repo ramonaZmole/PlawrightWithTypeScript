@@ -12,22 +12,23 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: 'html',
   use: {
-    trace: 'on-first-retry'
+    trace: 'on-first-retry',
+    headless: false
   },
 
   /* Configure projects for major browsers */
   projects: [
     {
       name: 'chromium',
-      
-      use: {  
+
+      use: {
         ...devices['Desktop Chromium'],
         viewport: null,
-    
+
         launchOptions: {
           args: ["--start-maximized"]
-      } 
-      }, 
+        }
+      },
     },
 
     // {

@@ -1,29 +1,46 @@
 import { expect, test } from '@playwright/test';
-import { ADMIN_USERNAME, ADMIN_PASSWORD } from '../../helpers/constants';
 import { ADMIN_URL } from '../../helpers/constants';
 import LoginPage from '../../pages/login-page';
-import AdminHeaderPage from '../../pages/admin-header-page'
+import RoomsPage from '../../pages/rooms-page';
 
 let loginPage: LoginPage;
-let adminHeaderPage: AdminHeaderPage;
+let roomsPage: RoomsPage;
 
-// test.beforeEach(async ({ page }) => {
-//     loginPage = new LoginPage(page);
-//     adminHeaderPage = new AdminHeaderPage(page);
-// });
+test.beforeEach(async ({ page }) => {
+    loginPage = new LoginPage(page);
+    roomsPage = new RoomsPage(page)
+});
 
 // const testCases = [
-//     { username: ADMIN_USERNAME, password: ADMIN_PASSWORD },
-//     { username: 'invalidUser', password: `invalidPassword` },
+//     { RoomType: RoomType.Double },
+//     { RoomType: RoomType.Family },
+//     { RoomType: RoomType.Single },
+//     { RoomType: RoomType.Suite },
+//     { RoomType: RoomType.Twin },
 // ];
 
-// for (const { username, password } of testCases)
-//     test(`Login as user ${username}`, async ({ page }) => {
-//         await page.goto(ADMIN_URL);
-//         await loginPage.login(username, password);
-//         await expect(adminHeaderPage.isLogoutButtonDisplayed).toBeTruthy;
-//     });
-
-// test.afterEach(async ({ page }) => {
-//     await page.close();
+//for (const RoomType of testCases)
+// test('Room can be created', async ({ page }) => {
+//     await page.goto(ADMIN_URL);
+//     await loginPage.login();
+//     await roomsPage.createRoom();
+//     await expect(await roomsPage.isErrorMessageDisplayed()).toBe(true);
 // });
+
+test('Room can be created', async ({ page }) => {
+    await page.goto(ADMIN_URL);
+    await loginPage.login();
+
+    await roomsPage.createRoom();
+    await expect(await roomsPage.isErrorMessageDisplayed()).toBeTruthy();
+
+    // let s = await roomsPage.getErrorMessages();
+    // let sa = await page.locator(".alert.alert-danger p").allTextContents();
+    // expect((await roomsPage.getErrorMessages()).includes("must be greater than or equal to 1"));
+    //await expect(s.includes("Room name must be set"));
+
+});
+
+test.afterEach(async ({ page }) => {
+    await page.close();
+});

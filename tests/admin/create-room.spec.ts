@@ -1,47 +1,75 @@
-import { expect, test } from '@playwright/test';
+import { APIRequestContext, expect, test } from '@playwright/test';
 import { ADMIN_URL } from '../../helpers/constants';
 import LoginPage from '../../pages/login-page';
 import RoomsPage from '../../pages/rooms-page';
 import { Room } from '../../helpers/models/room';
+import RoomType from '../../helpers/models/enums/room-type';
+import { URL } from '../../helpers/constants';
 
 let loginPage: LoginPage;
 let roomsPage: RoomsPage;
 
-test.beforeEach(async ({ page }) => {
+let apiContext: APIRequestContext;
+
+//test.describe.configure({ mode: 'serial' });
+
+test.beforeEach(async ({ page, playwright }) => {
+
+    let apiContext: APIRequestContext;
+
+    apiContext = await playwright.request.newContext({
+        baseURL: URL,
+        extraHTTPHeaders: {
+            // Authorization: `Basic ${Buffer.from(`${userName}:${password}`).toString('base64')}`,
+            Accept: 'application/json',
+        },
+    });
+
+   var t= await apiContext["post"]("/auth/login", { data: { username: "admin", password: "password" } });
+
     loginPage = new LoginPage(page);
     roomsPage = new RoomsPage(page)
 });
 
-// const testCases = [
-//     { RoomType: RoomType.Double },
-//     { RoomType: RoomType.Family },
-//     { RoomType: RoomType.Single },
-//     { RoomType: RoomType.Suite },
-//     { RoomType: RoomType.Twin },
-// ];
+const testCases = [
+    { roomType: RoomType.Double },
+    { roomType: RoomType.Family },
+    { roomType: RoomType.Single },
+    { roomType: RoomType.Suite },
+    { roomType: RoomType.Twin },
+];
 
-//for (const RoomType of testCases)
-// test('Room can be created', async ({ page }) => {
-//     await page.goto(ADMIN_URL);
-//     await loginPage.login();
-//     await roomsPage.createRoom();
-//     await expect(await roomsPage.isErrorMessageDisplayed()).toBe(true);
-// });
+for (const { roomType } of testCases)
+    test(`${RoomType[roomType]} room can be created`, async ({ page }) => {
+        await page.goto(ADMIN_URL);
+        await loginPage.login();
 
-test('Room can be created', async ({ page }) => {
-    await page.goto(ADMIN_URL);
-    await loginPage.login();
+        await roomsPage.createRoom();
+        expect(await roomsPage.isErrorMessageDisplayed()).toBeTruthy();
 
-    await roomsPage.createRoom();
-    await expect(await roomsPage.isErrorMessageDisplayed()).toBeTruthy();
+        let errorMessages = await roomsPage.getErrorMessages();
+        expect(errorMessages).toContain("Room name must be set")
+        expect(errorMessages).toContain("must be greater than or equal to 1")
+        let room = new Room();
+        room.type = RoomType[roomType];
 
-    let errorMessages = await roomsPage.getErrorMessages();
-    expect(errorMessages).toContain("Room name must be set")
-    expect(errorMessages).toContain("must be greater than or equal to 1")
-    await roomsPage.insertRoomDetails(new Room());
-    await roomsPage.createRoom();
-});
+        await roomsPage.insertRoomDetails(room);
+        await roomsPage.createRoom();
+        expect(await roomsPage.getLastRoomDetails()).toEqual(room);
+    });
 
-test.afterEach(async ({ page }) => {
+test.afterEach(async ({ page, playwright }) => {
     await page.close();
+
+    let apiContext: APIRequestContext;
+
+    apiContext = await playwright.request.newContext({
+        baseURL: URL,
+        extraHTTPHeaders: {
+            // Authorization: `Basic ${Buffer.from(`${userName}:${password}`).toString('base64')}`,
+            Accept: 'application/json',
+        },
+    });
+
+   var t= await apiContext["post"]("/auth/login", { data: { username: "admin", password: "password" } });
 });

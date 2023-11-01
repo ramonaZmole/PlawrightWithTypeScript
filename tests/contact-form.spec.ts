@@ -1,12 +1,10 @@
-import { expect, test } from '@playwright/test';
+import test, { expect } from "../helpers/fixtures/test-fixture";
 import Env from '../helpers/env';
-import Homepage from '../pages/homepage';
 import ContactForm from '../helpers/models/contact-form';
 import { faker } from '@faker-js/faker';
 import { contactFormEmptyFieldsErrorMessages, contactFormInvalidDataErrorMessages } from "../helpers/messages"
 
 
-let homepage: Homepage;
 let emptyData: ContactForm = {
     email: "",
     name: "",
@@ -23,17 +21,13 @@ let invalidData: ContactForm = {
     subject: faker.number.int(50).toString(),
 }
 
-test.beforeEach(async ({ page }) => {
-    homepage = new Homepage(page);
-});
-
 const testCases = [
     { caseValue: "empty", formData: emptyData, expectedErrors: contactFormEmptyFieldsErrorMessages },
     { caseValue: "invalid", formData: invalidData, expectedErrors: contactFormInvalidDataErrorMessages },
 ];
 
 for (const { caseValue, formData, expectedErrors: expectedErrors } of testCases)
-    test(`Send message with ${caseValue} data`, async ({ page }) => {
+    test(`Send message with ${caseValue} data`, async ({ page, homepage }) => {
         await page.goto(Env.URL!)
         await homepage.sendMessage(formData);
 
@@ -41,7 +35,3 @@ for (const { caseValue, formData, expectedErrors: expectedErrors } of testCases)
         expect(actualErrors).toHaveLength(expectedErrors.length);
         expect(actualErrors).toEqual(expect.arrayContaining(expectedErrors));
     });
-
-test.afterEach(async ({ page }) => {
-    await page.close();
-});

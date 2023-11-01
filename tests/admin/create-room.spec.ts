@@ -1,21 +1,14 @@
-import { expect, test } from '@playwright/test';
-import LoginPage from '../../pages/login-page';
-import RoomsPage from '../../pages/rooms-page';
+import test, { expect } from "../../helpers/fixtures/test-fixture";
 import { Room } from '../../helpers/models/room';
 import RoomType from '../../helpers/models/enums/room-type';
 import { deleteRoom } from '../../helpers/api-helpers'
 import Env from "../../helpers/env"
 
-let loginPage: LoginPage;
-let roomsPage: RoomsPage;
 let room: Room = new Room();
 
 test.describe.configure({ mode: 'serial' });
 
-test.beforeEach(async ({ page }) => {
-    loginPage = new LoginPage(page);
-    roomsPage = new RoomsPage(page)
-
+test.beforeEach(async ({ page, loginPage }) => {
     await page.goto(Env.ADMIN_URL!);
     await loginPage.login();
 
@@ -30,7 +23,7 @@ const testCases = [
 ];
 
 for (const { roomType } of testCases)
-    test(`${RoomType[roomType]} room can be created`, async () => {
+    test(`${RoomType[roomType]} room can be created`, async ({ roomsPage }) => {
         await roomsPage.createRoom();
         expect(await roomsPage.isErrorMessageDisplayed()).toBeTruthy();
 
@@ -46,14 +39,13 @@ for (const { roomType } of testCases)
     });
 
 
-test(`Create room with no features`, async () => {
+test(`Create room with no features`, async ({ roomsPage }) => {
     room.roomDetails = "";
 
     await roomsPage.insertRoomDetails(room);
     await roomsPage.createRoom();
     expect((await roomsPage.getLastRoomDetails()).roomDetails).toEqual("No features added to the room");
 });
-test.afterEach(async ({ page }) => {
-    await page.close();
+test.afterEach(async () => {
     await deleteRoom(Number(room.roomName));
 });

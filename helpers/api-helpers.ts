@@ -1,6 +1,7 @@
 import Env from "./env"
 import { request } from "@playwright/test";
 import { GetRoomsOutput } from "./models/api/get-room-output";
+import apiPath from "../helpers/api-paths"
 
 
 async function getRequestContext() {
@@ -11,7 +12,7 @@ async function getRequestContext() {
 }
 
 async function getLoginToken() {
-  const response = await (await getRequestContext()).post("auth/login", {
+  const response = await (await getRequestContext()).post(apiPath.login, {
     data: {
       username: Env.ADMIN_USERNAME,
       password: Env.ADMIN_PASSWORD,
@@ -24,7 +25,7 @@ async function getLoginToken() {
 }
 
 export async function getRooms() {
-  const response = await (await getRequestContext()).get("room/", {
+  const response = await (await getRequestContext()).get(apiPath.room, {
     headers: {
       cookie: `token=${await getLoginToken()}`
     },
@@ -36,7 +37,7 @@ export async function deleteRoom(roomName: number) {
   let roomsList = await getRooms();
   let roomId = roomsList.rooms.filter(x => x.roomName == roomName)[0].roomid;
 
-  const response = await (await getRequestContext()).delete(`room/${roomId}`, {
+  const response = await (await getRequestContext()).delete(`${apiPath.room}/${roomId}`, {
     headers: {
       cookie: `token=${await getLoginToken()}`
     },

@@ -1,6 +1,7 @@
 import { Locator, Page } from "@playwright/test";
 import { Room } from "../helpers/models/room";
 import BasePage from "./base-page";
+import apiPaths from "../helpers/api-paths";
 
 export default class RoomsPage extends BasePage {
   readonly #page: Page;
@@ -28,7 +29,7 @@ export default class RoomsPage extends BasePage {
 
   async createRoom() {
     await this.#createButton.click();
-    await this.#page.waitForResponse(response => response.url().includes("/room/")
+    await this.#page.waitForResponse(response => response.url().includes(apiPaths.room)
       && response.request().method() === "POST");
     await this.#page.waitForEvent("requestfinished");
     await this.#page.waitForTimeout(300)

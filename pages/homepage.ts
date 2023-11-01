@@ -1,6 +1,7 @@
 import { type Locator, type Page } from "@playwright/test";
 import ContactForm from "../helpers/models/contact-form";
 import BasePage from "./base-page";
+import apiPaths from "../helpers/api-paths";
 
 export default class Homepage extends BasePage {
 
@@ -34,6 +35,7 @@ export default class Homepage extends BasePage {
         await this.#messageInput.fill(formData.message);
 
         await this.#submitContactButton.click();
-        await  this.#page.waitForEvent("requestfinished");
+        await this.#page.waitForEvent("requestfinished");
+        await this.#page.waitForResponse(x => x.url().includes(apiPaths.message))
     }
 }

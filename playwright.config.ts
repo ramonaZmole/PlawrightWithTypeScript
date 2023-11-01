@@ -1,8 +1,8 @@
 import { defineConfig, devices } from '@playwright/test';
 
- //require('dotenv').config();
+//require('dotenv').config();
 
- if (process.env.test_env) {
+if (process.env.test_env) {
   require('dotenv').config({
     path: `.env.${process.env.test_env}`,
     override: true,
@@ -41,10 +41,17 @@ export default defineConfig({
       },
     },
 
-    // {
-    //   name: 'firefox',
-    //   use: { ...devices['Desktop Firefox'] },
-    // },
+    {
+      name: 'firefox',
+      use: {
+        ...devices['Desktop Firefox'],
+        viewport: null,
+
+        launchOptions: {
+          args: ["--start-maximized"]
+        }
+      },
+    },
 
     // {
     //   name: 'webkit',

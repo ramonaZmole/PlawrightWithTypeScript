@@ -1,5 +1,6 @@
 import { Page, Locator } from '@playwright/test';
 import Env from "../helpers/env"
+import apiPaths from '../helpers/api-paths';
 
 export default class LoginPage {
     readonly #page: Page;
@@ -29,6 +30,6 @@ export default class LoginPage {
         }
         await this.#loginButton.click();
         await this.#page.waitForLoadState('domcontentloaded');
-        await this.#page.waitForResponse(x => x.url().includes('/auth/login'))
+        await this.#page.waitForResponse(x => x.url().includes(apiPaths.login));
     }
 }

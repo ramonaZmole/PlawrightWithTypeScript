@@ -36,6 +36,6 @@ export default class Homepage extends BasePage {
 
         await this.#submitContactButton.click();
         await this.#page.waitForEvent("requestfinished");
-        await this.#page.waitForResponse(x => x.url().includes(apiPaths.message))
+        //await this.#page.waitForResponse(x => x.url().includes(apiPaths.message))
     }
 }

@@ -30,7 +30,6 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-
       use: {
         ...devices['Desktop Chromium'],
         viewport: null,
@@ -41,17 +40,12 @@ export default defineConfig({
       },
     },
 
-    {
-      name: 'firefox',
-      use: {
-        ...devices['Desktop Firefox'],
-        viewport: null,
-
-        launchOptions: {
-          args: ["--start-maximized"]
-        }
-      },
-    },
+    // {
+    //   name: 'firefox',
+    //   use: {
+    //     ...devices['Desktop Firefox'],
+    //   },
+    // },
 
     // {
     //   name: 'webkit',

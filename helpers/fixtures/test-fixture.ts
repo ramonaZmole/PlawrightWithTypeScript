@@ -15,24 +15,23 @@ const test = baseTest.extend<Fixtures>({
 
     loginPage: async ({ page }, use) => {
         await use(new LoginPage(page))
-        await page.close();
         { scope: 'test' }
+        await page.close();
     },
     adminHeaderPage: async ({ page }, use) => {
         await use(new AdminHeaderPage(page))
-        await page.close();
         { scope: 'test' }
+        await page.close();
     },
     homepage: async ({ page }, use) => {
         await use(new Homepage(page))
-        
-        await page.close();
         { scope: 'test' }
+        await page.close();
     },
     roomsPage: async ({ page }, use) => {
         await use(new RoomsPage(page))
-        await page.close();
         { scope: 'test' }
+        await page.close();
     }
 })
 

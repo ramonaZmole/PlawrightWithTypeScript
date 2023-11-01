@@ -23,7 +23,7 @@ async function getLoginToken() {
   return tokenString.split("=")[1];
 }
 
-export async function getRooms(): Promise<GetRoomsOutput> {
+export async function getRooms() {
   const response = await (await getRequestContext()).get("room/", {
     headers: {
       cookie: `token=${await getLoginToken()}`

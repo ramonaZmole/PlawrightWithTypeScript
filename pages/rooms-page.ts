@@ -39,6 +39,8 @@ export default class RoomsPage extends BasePage {
     await this.#typeDropdown.selectOption(room.type);
     await this.#accessibleDropdown.selectOption(room.accessible);
     await this.#roomPriceInput.fill(room.price);
+    
+    if (room.roomDetails === "") return;
     await this.#roomDetailsLabels.filter({ hasText: room.roomDetails }).click();
   }
 

@@ -1,9 +1,8 @@
 import { Locator, Page } from "@playwright/test";
-import { BasePage } from "./base-page";
 import { Room } from "../helpers/models/room";
-import RoomType from "../helpers/models/enums/room-type";
+import BasePage from "./base-page";
 
-class RoomsPage extends BasePage {
+export default class RoomsPage extends BasePage {
   readonly #page: Page;
 
   readonly #createButton: Locator;
@@ -57,4 +56,3 @@ class RoomsPage extends BasePage {
   }
 
 }
-export default RoomsPage;

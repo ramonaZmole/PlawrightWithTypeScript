@@ -1,7 +1,7 @@
 import { Page, Locator } from '@playwright/test';
-import { ADMIN_USERNAME, ADMIN_PASSWORD } from '../helpers/constants';
+import Env from "../helpers/env"
 
-class LoginPage {
+export default class LoginPage {
     readonly #page: Page;
 
     readonly #usernameInput: Locator;
@@ -20,8 +20,8 @@ class LoginPage {
     async login(username?: string, password?: string) {
 
         if (typeof username == 'undefined' || typeof password == 'undefined') {
-            await this.#usernameInput.fill(ADMIN_USERNAME);
-            await this.#passwordInput.fill(ADMIN_PASSWORD);
+            await this.#usernameInput.fill(Env.ADMIN_USERNAME!);
+            await this.#passwordInput.fill(Env.ADMIN_PASSWORD!);
         }
         else {
             await this.#usernameInput.fill(username);
@@ -32,5 +32,3 @@ class LoginPage {
         await this.#page.waitForResponse(x => x.url().includes('/auth/login'))
     }
 }
-
-export default LoginPage;

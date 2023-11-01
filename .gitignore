@@ -5,8 +5,5 @@ node_modules/
 
 megalinter-reports/
 
-/.vs/PlawrightWithTypeScript/FileContentIndex/620e1add-b41d-417d-9db6-26d9b9970d52.vsidx
-/.vs/PlawrightWithTypeScript/v17/.wsuo
-/.vs/PlawrightWithTypeScript/v17/TestStore/0/000.testlog
-/.vs/PlawrightWithTypeScript/v17/TestStore/0/testlog.manifest
-/.vs/slnx.sqlite
+/.vs/*
+.vscode/*

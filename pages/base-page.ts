@@ -1,6 +1,6 @@
 import { type Locator, type Page } from "@playwright/test";
 
-export class BasePage {
+export default class BasePage {
     readonly #page: Page;
 
     readonly #errorMessages: Locator;

@@ -1,5 +1,4 @@
- enum RoomType
-{
+enum RoomType {
     Single,
     Twin,
     Double,

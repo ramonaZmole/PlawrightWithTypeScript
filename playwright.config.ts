@@ -1,6 +1,15 @@
 import { defineConfig, devices } from '@playwright/test';
 
-// require('dotenv').config();
+ //require('dotenv').config();
+
+ if (process.env.test_env) {
+  require('dotenv').config({
+    path: `.env.${process.env.test_env}`,
+    override: true,
+  });
+} else {
+  require('dotenv').config();
+}
 
 export default defineConfig({
   testDir: './tests',
@@ -9,7 +18,7 @@ export default defineConfig({
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
   /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 4 : undefined,
+  workers: process.env.CI ? 1 : undefined,
   reporter: 'html',
   use: {
     screenshot: 'only-on-failure',

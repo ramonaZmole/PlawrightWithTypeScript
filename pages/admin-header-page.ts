@@ -1,6 +1,6 @@
 import { Locator, Page, expect } from "@playwright/test";
 
-class AdminHeaderPage {
+export default class AdminHeaderPage {
 
     readonly #page: Page
 
@@ -16,4 +16,3 @@ class AdminHeaderPage {
         return await this.#logoutButton.isVisible();
     }
 }
-export default AdminHeaderPage;

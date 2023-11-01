@@ -1,32 +1,18 @@
-import { APIRequestContext, expect, test } from '@playwright/test';
-import { ADMIN_URL } from '../../helpers/constants';
+import { expect, test } from '@playwright/test';
 import LoginPage from '../../pages/login-page';
 import RoomsPage from '../../pages/rooms-page';
 import { Room } from '../../helpers/models/room';
 import RoomType from '../../helpers/models/enums/room-type';
-import { URL } from '../../helpers/constants';
+import { deleteRoom } from '../../helpers/api-helpers'
+import Env from "../../helpers/env"
 
 let loginPage: LoginPage;
 let roomsPage: RoomsPage;
+let room: Room;
 
-let apiContext: APIRequestContext;
+test.describe.configure({ mode: 'serial' });
 
-//test.describe.configure({ mode: 'serial' });
-
-test.beforeEach(async ({ page, playwright }) => {
-
-    let apiContext: APIRequestContext;
-
-    apiContext = await playwright.request.newContext({
-        baseURL: URL,
-        extraHTTPHeaders: {
-            // Authorization: `Basic ${Buffer.from(`${userName}:${password}`).toString('base64')}`,
-            Accept: 'application/json',
-        },
-    });
-
-   var t= await apiContext["post"]("/auth/login", { data: { username: "admin", password: "password" } });
-
+test.beforeEach(async ({ page }) => {
     loginPage = new LoginPage(page);
     roomsPage = new RoomsPage(page)
 });
@@ -41,7 +27,7 @@ const testCases = [
 
 for (const { roomType } of testCases)
     test(`${RoomType[roomType]} room can be created`, async ({ page }) => {
-        await page.goto(ADMIN_URL);
+        await page.goto(Env.ADMIN_URL!);
         await loginPage.login();
 
         await roomsPage.createRoom();
@@ -50,7 +36,7 @@ for (const { roomType } of testCases)
         let errorMessages = await roomsPage.getErrorMessages();
         expect(errorMessages).toContain("Room name must be set")
         expect(errorMessages).toContain("must be greater than or equal to 1")
-        let room = new Room();
+        room = new Room();
         room.type = RoomType[roomType];
 
         await roomsPage.insertRoomDetails(room);
@@ -58,18 +44,7 @@ for (const { roomType } of testCases)
         expect(await roomsPage.getLastRoomDetails()).toEqual(room);
     });
 
-test.afterEach(async ({ page, playwright }) => {
+test.afterEach(async ({ page }) => {
     await page.close();
-
-    let apiContext: APIRequestContext;
-
-    apiContext = await playwright.request.newContext({
-        baseURL: URL,
-        extraHTTPHeaders: {
-            // Authorization: `Basic ${Buffer.from(`${userName}:${password}`).toString('base64')}`,
-            Accept: 'application/json',
-        },
-    });
-
-   var t= await apiContext["post"]("/auth/login", { data: { username: "admin", password: "password" } });
+    await deleteRoom(Number(room.roomName));
 });

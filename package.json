@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "all":"npx playwright test tests/"
+    "all": "npx playwright test tests/"
   },
   "repository": {
     "type": "git",
@@ -18,12 +18,11 @@
   },
   "homepage": "https://github.com/ramonaZmole/PlawrightWithTypeScript#readme",
   "devDependencies": {
-    "@faker-js/faker": "^8.2.0",
-    "@playwright/test": "^1.39.0",
-    "@types/node": "^20.8.7"
+    "@faker-js/faker": "^10.6.0",
+    "@playwright/test": "^1.65.1",
+    "@types/node": "^26.6.10"
   },
   "dependencies": {
-    "dotenv": "^16.3.1",
-    "faker": "^6.6.6"
+    "dotenv": "^18.0.10"
   }
 }

@@ -1,7 +1,8 @@
 import test, { expect } from "../../helpers/fixtures/test-fixture";
 import { Room } from '../../helpers/models/room';
 import RoomType from '../../helpers/models/enums/room-type';
-import { deleteRoom } from '../../helpers/api-helpers'
+import { deleteRoom, getRooms } from '../../helpers/api-helpers'
+import { faker } from '@faker-js/faker';
 import Env from "../../helpers/env"
 
 let room: Room = new Room();
@@ -12,6 +13,10 @@ test.beforeEach(async ({ page, loginPage }) => {
     await page.goto(Env.ADMIN_URL!);
     await loginPage.login();
 
+    const existingRoomNames = new Set((await getRooms()).rooms.map(existingRoom => existingRoom.roomName));
+    do {
+        room.roomName = faker.number.int({ min: 1000, max: 999999 }).toString();
+    } while (existingRoomNames.has(Number(room.roomName)));
 });
 
 const testCases = [
@@ -28,14 +33,13 @@ for (const { roomType } of testCases)
         expect(await roomsPage.isErrorMessageDisplayed()).toBeTruthy();
 
         let errorMessages = await roomsPage.getErrorMessages();
-        expect(errorMessages).toContain("Room name must be set")
-        expect(errorMessages).toContain("must be greater than or equal to 1")
+        expect(errorMessages).toContain("Failed to create room")
 
         room.type = RoomType[roomType];
 
         await roomsPage.insertRoomDetails(room);
         await roomsPage.createRoom();
-        expect(await roomsPage.getLastRoomDetails()).toEqual(room);
+        expect(await roomsPage.getRoomDetails(room.roomName)).toEqual(room);
     });
 
 
@@ -44,7 +48,7 @@ test(`Create room with no features`, async ({ roomsPage }) => {
 
     await roomsPage.insertRoomDetails(room);
     await roomsPage.createRoom();
-    expect((await roomsPage.getLastRoomDetails()).roomDetails).toEqual("No features added to the room");
+    expect((await roomsPage.getRoomDetails(room.roomName)).roomDetails).toEqual("No features added to the room");
 });
 test.afterEach(async () => {
     await deleteRoom(Number(room.roomName));

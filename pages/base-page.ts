@@ -8,7 +8,7 @@ export default class BasePage {
     constructor(page: Page) {
         this.#page = page;
 
-        this.#errorMessages = page.locator(".alert.alert-danger p");
+        this.#errorMessages = page.locator("#contact p, .alert.alert-danger p");
     }
 
     async getErrorMessages(): Promise<string[]> {
@@ -16,7 +16,8 @@ export default class BasePage {
     }
 
     async isErrorMessageDisplayed(): Promise<boolean> {
-        let errorMessages = await this.#errorMessages.all();
-        return errorMessages.every(x => x.isVisible());
+        const errorMessages = await this.#errorMessages.all();
+        return errorMessages.length > 0
+            && (await Promise.all(errorMessages.map(errorMessage => errorMessage.isVisible()))).every(Boolean);
     }
 }

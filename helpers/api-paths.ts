@@ -1,5 +1,5 @@
 export default {
-    login: "/auth/login",
-    room: "/room/",
-    message:"message/"
+    login: "/api/auth/login",
+    room: "/api/room",
+    message: "/api/message"
 }

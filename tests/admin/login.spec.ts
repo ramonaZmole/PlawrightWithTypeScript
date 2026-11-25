@@ -7,8 +7,12 @@ const testCases = [
 ];
 
 for (const { username, password, isLoggedIn } of testCases)
-    test(`Login as user ${username}`, async ({ page, loginPage, adminHeaderPage }) => {
+    test(`Login as user ${username}`, async ({ page, loginPage }) => {
         await page.goto(Env.ADMIN_URL!);
         await loginPage.login(username, password);
-        expect(await adminHeaderPage.isLogoutButtonDisplayed()).toBe(isLoggedIn);
+        if (isLoggedIn) {
+            await expect(page).toHaveURL(/\/admin\/rooms/);
+        } else {
+            await expect(page.getByText("Invalid credentials")).toBeVisible();
+        }
     });

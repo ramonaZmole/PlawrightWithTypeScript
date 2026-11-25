@@ -12,8 +12,8 @@ export default class LoginPage {
     constructor(page: Page) {
         this.#page = page;
 
-        this.#usernameInput = page.getByPlaceholder("Username")
-        this.#passwordInput = page.getByPlaceholder("Password");
+        this.#usernameInput = page.locator("#username");
+        this.#passwordInput = page.locator("#password");
         this.#loginButton = page.locator("#doLogin");
     }
 
@@ -28,8 +28,11 @@ export default class LoginPage {
             await this.#usernameInput.fill(username);
             await this.#passwordInput.fill(password);
         }
+        const loginResponse = this.#page.waitForResponse(
+            response => response.url().includes(apiPaths.login)
+                && response.request().method() === "POST"
+        );
         await this.#loginButton.click();
-        await this.#page.waitForLoadState('domcontentloaded');
-        await this.#page.waitForResponse(x => x.url().includes(apiPaths.login));
+        await loginResponse;
     }
 }

@@ -12,34 +12,66 @@ async function getRequestContext() {
 }
 
 async function getLoginToken() {
-  const response = await (await getRequestContext()).post(apiPath.login, {
-    data: {
-      username: Env.ADMIN_USERNAME,
-      password: Env.ADMIN_PASSWORD,
-    },
-  });
+  const context = await getRequestContext();
+  try {
+    const response = await context.post(apiPath.login, {
+      data: {
+        username: Env.ADMIN_USERNAME,
+        password: Env.ADMIN_PASSWORD,
+      },
+    });
 
-  const headers = response.headers();
-  let tokenString = headers["set-cookie"].split(";")[0];
-  return tokenString.split("=")[1];
+    if (!response.ok()) {
+      throw new Error(`Admin login failed with status ${response.status()}`);
+    }
+
+    const body: { token?: unknown } = await response.json();
+    if (typeof body.token !== "string" || body.token.length === 0) {
+      throw new Error("Admin login response did not contain a token");
+    }
+
+    return body.token;
+  } finally {
+    await context.dispose();
+  }
 }
 
 export async function getRooms() {
-  const response = await (await getRequestContext()).get(apiPath.room, {
-    headers: {
-      cookie: `token=${await getLoginToken()}`
-    },
-  });
-  return await response.json() as GetRoomsOutput;
+  const context = await getRequestContext();
+  try {
+    const response = await context.get(apiPath.room, {
+      headers: {
+        cookie: `token=${await getLoginToken()}`
+      },
+    });
+
+    if (!response.ok()) {
+      throw new Error(`Fetching rooms failed with status ${response.status()}`);
+    }
+
+    return await response.json() as GetRoomsOutput;
+  } finally {
+    await context.dispose();
+  }
 }
 
 export async function deleteRoom(roomName: number) {
-  let roomsList = await getRooms();
-  let roomId = roomsList.rooms.filter(x => x.roomName == roomName)[0].roomid;
+  const roomsList = await getRooms();
+  const room = roomsList.rooms.find(x => x.roomName === roomName);
+  if (!room) return;
 
-  const response = await (await getRequestContext()).delete(`${apiPath.room}/${roomId}`, {
-    headers: {
-      cookie: `token=${await getLoginToken()}`
-    },
-  });
+  const context = await getRequestContext();
+  try {
+    const response = await context.delete(`${apiPath.room}/${room.roomid}`, {
+      headers: {
+        cookie: `token=${await getLoginToken()}`
+      },
+    });
+
+    if (!response.ok()) {
+      throw new Error(`Deleting room ${roomName} failed with status ${response.status()}`);
+    }
+  } finally {
+    await context.dispose();
+  }
 }

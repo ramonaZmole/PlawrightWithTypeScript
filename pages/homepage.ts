@@ -23,7 +23,7 @@ export default class Homepage extends BasePage {
         this.#contactPhoneInput = page.locator("#phone");
         this.#subjectInput = page.locator("#subject");
         this.#messageInput = page.locator("#description");
-        this.#submitContactButton = page.locator("#submitContact");
+        this.#submitContactButton = page.getByRole("button", { name: "Submit" });
     }
 
     async sendMessage(formData: ContactForm) {
@@ -34,8 +34,11 @@ export default class Homepage extends BasePage {
         await this.#subjectInput.fill(formData.subject);
         await this.#messageInput.fill(formData.message);
 
+        const response = this.#page.waitForResponse(
+            response => response.url().includes(apiPaths.message)
+                && response.request().method() === "POST"
+        );
         await this.#submitContactButton.click();
-        await this.#page.waitForEvent("requestfinished");
-        //await this.#page.waitForResponse(x => x.url().includes(apiPaths.message))
+        await response;
     }
 }

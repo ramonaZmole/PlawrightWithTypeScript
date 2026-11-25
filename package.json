@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "all": "npx playwright test tests/"
+    "all": "npx playwright test tests/",
+    "report": "npx playwright show-report playwright-report --host 127.0.0.1 --port 9324"
   },
   "repository": {
     "type": "git",

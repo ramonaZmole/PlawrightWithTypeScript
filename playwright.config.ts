@@ -19,7 +19,7 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 3 : undefined,
-  reporter: 'html',
+  reporter: [['html', { outputFolder: 'playwright-report', open: 'never' }]],
   use: {
     screenshot: 'only-on-failure',
     trace: 'on-first-retry',

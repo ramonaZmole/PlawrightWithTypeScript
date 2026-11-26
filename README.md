@@ -72,6 +72,6 @@ Playwright saves an HTML report to `playwright-report/` after a test run. Start 
 npm run report
 ```
 
-The viewer runs a local web server at `http://127.0.0.1:9324`; stop it with `Ctrl+C` when finished. If that port is in use, choose another with `npm run report -- --port 9325`. Run the tests without overriding the configured reporter to generate the HTML report.
+The viewer runs a local web server at `http://localhost:9324`; stop it with `Ctrl+C` when finished. If that port is in use, choose another with `npm run report -- --port 9325`. Run the tests without overriding the configured reporter to generate the HTML report.
 
 If Playwright reports that its browser executable is missing, install Chromium with `npx playwright install chromium`.

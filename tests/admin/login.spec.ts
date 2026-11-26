@@ -1,18 +1,19 @@
-import test, { expect } from "../../helpers/fixtures/test-fixture";
-import Env from '../../helpers/env';
+import test, { expect } from '../../helpers/fixtures/test-fixture'
+import { requireEnv } from '../../helpers/env'
 
 const testCases = [
-    { username: Env.ADMIN_USERNAME, password: Env.ADMIN_PASSWORD, isLoggedIn: true },
-    { username: 'invalidUser', password: 'invalidPassword', isLoggedIn: false },
-];
+  { username: requireEnv('ADMIN_USERNAME'), password: requireEnv('ADMIN_PASSWORD'), isLoggedIn: true },
+  { username: 'invalidUser', password: 'invalidPassword', isLoggedIn: false }
+]
 
-for (const { username, password, isLoggedIn } of testCases)
-    test(`Login as user ${username}`, async ({ page, loginPage }) => {
-        await page.goto(Env.ADMIN_URL!);
-        await loginPage.login(username, password);
-        if (isLoggedIn) {
-            await expect(page).toHaveURL(/\/admin\/rooms/);
-        } else {
-            await expect(page.getByText("Invalid credentials")).toBeVisible();
-        }
-    });
+for (const { username, password, isLoggedIn } of testCases) {
+  test(`Login as user ${username}`, async ({ page, loginPage }) => {
+    await page.goto(requireEnv('ADMIN_URL'))
+    await loginPage.login(username, password)
+    if (isLoggedIn) {
+      await expect(page).toHaveURL(/\/admin\/rooms/)
+    } else {
+      await expect(page.getByText('Invalid credentials')).toBeVisible()
+    }
+  })
+}

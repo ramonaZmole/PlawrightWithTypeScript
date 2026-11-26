@@ -1,24 +1,26 @@
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices } from '@playwright/test'
+import dotenv from 'dotenv'
 
-//require('dotenv').config();
-
-if (process.env.test_env) {
-  require('dotenv').config({
-    path: `.env.${process.env.test_env}`,
-    override: true,
-  });
+const testEnv = process.env.test_env
+if (testEnv !== undefined && testEnv.length > 0) {
+  dotenv.config({
+    path: `.env.${testEnv}`,
+    override: true
+  })
 } else {
-  require('dotenv').config();
+  dotenv.config()
 }
+
+const isCi = process.env.CI === 'true'
 
 export default defineConfig({
   testDir: './tests',
   fullyParallel: true,
-  forbidOnly: !!process.env.CI,
+  forbidOnly: isCi,
   /* Retry on CI only */
-  retries: process.env.CI ? 2 : 0,
+  retries: isCi ? 2 : 0,
   /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 3 : undefined,
+  workers: isCi ? 3 : undefined,
   reporter: [['html', { outputFolder: 'playwright-report', open: 'never' }]],
   use: {
     screenshot: 'only-on-failure',
@@ -35,10 +37,10 @@ export default defineConfig({
         viewport: null,
 
         launchOptions: {
-          args: ["--start-maximized"]
+          args: ['--start-maximized']
         }
-      },
-    },
+      }
+    }
 
     // {
     //   name: 'firefox',
@@ -51,5 +53,5 @@ export default defineConfig({
     //   name: 'webkit',
     //   use: { ...devices['Desktop Safari'] },
     // },
-  ],
-});
+  ]
+})

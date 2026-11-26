@@ -1,9 +1,9 @@
 enum RoomType {
-    Single,
-    Twin,
-    Double,
-    Family,
-    Suite
+  Single,
+  Twin,
+  Double,
+  Family,
+  Suite
 }
 
 export default RoomType

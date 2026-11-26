@@ -14,6 +14,8 @@
       branches:
         - main
         - master
+
+  permissions: read-all
   
   # Comment env block if you do not want to apply fixes
   env:
@@ -63,13 +65,13 @@
         - name: MegaLinter
   
           # You can override MegaLinter flavor used to have faster performances
-          # More info at https://megalinter.io/flavors/
-          uses: oxsecurity/megalinter@v7
+          # More info at https://megalinter.io/10.2.0/flavors/
+          uses: oxsecurity/megalinter@f2fe8c1cba37091848df3e524066c8c23ef353ed # v10.2.0
   
           id: ml
   
           # All available variables are described in documentation
-          # https://megalinter.io/configuration/
+          # https://megalinter.io/10.2.0/configuration/
           env:
   
             # Validates all source when push on main, else just the git diff with
@@ -101,7 +103,7 @@
         # Upload MegaLinter artifacts
         - name: Archive production artifacts
           uses: actions/upload-artifact@v4
-          if: ${{ success() }} || ${{ failure() }}
+          if: always()
           with:
             name: MegaLinter reports
             path: |
@@ -139,7 +141,7 @@
         # Create pull request if applicable
         # (for now works only on PR from same repository, not from forks)
         - name: Create Pull Request with applied fixes
-          uses: peter-evans/create-pull-request@v5
+          uses: peter-evans/create-pull-request@5b4a9f6a9e2af26e5f02351490b90d01eb8ec1e5 # v5.0.0
           id: cpr
           if: env.APPLY_FIXES_IF_PR == 'true'
           with:
@@ -161,7 +163,7 @@
           run: sudo chown -Rc $UID .git/
   
         - name: Commit and push applied linter fixes
-          uses: stefanzweifel/git-auto-commit-action@v4
+          uses: stefanzweifel/git-auto-commit-action@3ea6ae190baf489ba007f7c92608f33ce20ef04a # v4.16.0
           if: env.APPLY_FIXES_IF_COMMIT == 'true'
           with:
             branch: >-

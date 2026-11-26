@@ -6,11 +6,22 @@
     "**/.pnpm-lock.json",
     ".vscode",
     "megalinter",
+    "megalinter-reports",
     "package-lock.json",
-    "report"
+    "playwright-report",
+    "report",
+    "test-results"
   ],
   "language": "en",
   "noConfigSearch": true,
-  "words": ["megalinter", "oxsecurity"],
+  "words": [
+    "megalinter",
+    "oxsecurity",
+    "plawright",
+    "roomid",
+    "roomlisting",
+    "stefanzweifel",
+    "venv"
+  ],
   "version": "0.2"
 }

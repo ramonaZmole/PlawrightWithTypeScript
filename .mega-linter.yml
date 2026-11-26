@@ -21,6 +21,8 @@ APPLY_FIXES: all
 SHOW_ELAPSED_TIME: true
 
 FILEIO_REPORTER: false
+ACTION_ZIZMOR_UNSECURED_ENV_VARIABLES:
+  - GITHUB_TOKEN
 
 # Uncomment if you want MegaLinter to detect errors but not block CI to pass
 # DISABLE_ERRORS: true

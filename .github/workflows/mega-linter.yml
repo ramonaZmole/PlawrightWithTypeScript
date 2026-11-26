@@ -53,7 +53,7 @@
   
         # Git Checkout
         - name: Checkout Code
-          uses: actions/checkout@v4
+          uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
           with:
             token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
   
@@ -61,6 +61,14 @@
             # improve performance
             fetch-depth: 0
   
+        - name: Setup Node.js
+          uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+          with:
+            node-version: 22
+
+        - name: Install dependencies
+          run: npm ci
+
         # MegaLinter
         - name: MegaLinter
   
@@ -102,7 +110,7 @@
   
         # Upload MegaLinter artifacts
         - name: Archive production artifacts
-          uses: actions/upload-artifact@v4
+          uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
           if: always()
           with:
             name: MegaLinter reports
